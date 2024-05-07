@@ -1,15 +1,29 @@
 class Contact {
-    constructor({id, name, phone, email, photo}) {
+    constructor({id, name, phone, email, photo, bio, page_pessoal, conhecido_por, favorito}) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.photo = photo;
+        this.bio = bio;
+        this.page_pessoal = page_pessoal;
+        this.conhecido_por = conhecido_por;
+        this.favorito = favorito;
     }
 }
 
 const contactList = document.getElementById('contact-list');
 const addContactForm = document.getElementById('add-contact-form');
+const botoes = document.getElementById('botoes');
+
+const botaoeditar = document.createElement('button');
+botaoeditar.setAttribute('class', 'ml-1 btn btn-success');
+
+const botaocancelar = document.createElement('button');
+botaocancelar.setAttribute('class', 'ml-1 btn btn-danger');
+
+botaoeditar.textContent = `FINALIZAR EDIÇÃO`;
+botaocancelar.textContent = `CANCELAR EDIÇÃO`
 
 document.addEventListener('DOMContentLoaded', listContacts);
 
@@ -37,6 +51,10 @@ function submitContact(event){
         phone: formData.get('phone'),
         email: formData.get('email'),
         photo: formData.get('photo') || 'https://via.placeholder.com/100', // Foto padrão
+        bio:  formData.get('bio'),
+        page_pessoal:  formData.get('page_pessoal'),
+        conhecido_por:  formData.get('conhecido_por'), //tipo de dado select
+        favorito:  formData.get('favorito'), //tipo de dado select
     };
 
     addContact(contactData)
@@ -54,7 +72,7 @@ function submitContact(event){
 
 // Função para buscar contatos na API
 function fetchContacts() {
-    return fetch('https://imd0404-webi-default-rtdb.firebaseio.com/contacts.json')
+    return fetch('https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/contacts.json')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Resposta de rede não foi ok');
@@ -69,7 +87,13 @@ function fetchContacts() {
                     name: contacts[key].name,
                     phone: contacts[key].phone,
                     email: contacts[key].email,
-                    photo: contacts[key].photo});
+                    photo: contacts[key].photo,
+                    bio:  contacts[key].bio,
+                    page_pessoal:  contacts[key].page_pessoal,
+                    conhecido_por:  contacts[key].conhecido_por,
+                    favorito:  contacts[key].favorito,
+                }
+                );
 
                 //contacts.push({ id: key, ...data[key] });
                 contactsList.push(contact);
@@ -80,7 +104,7 @@ function fetchContacts() {
 
 // Função para adicionar contato na API
 function addContact(contactData) {
-    return fetch('https://imd0404-webi-default-rtdb.firebaseio.com/contacts.json', {
+    return fetch('https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/contacts.json', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -109,13 +133,23 @@ function createContactCard(contact) {
     
     const contactCard = document.createElement('div');
     contactCard.classList.add('contact');
+    contactCard.setAttribute('class', 'p-3 m-3 d-flex flex-row bg-light');
+
+    const posicao_buttons = document.createElement('div');
+    posicao_buttons.setAttribute('class', 'd-flex flex-column float-right w-25' );
+    const posicao_texto = document.createElement('div');
+    posicao_texto.setAttribute('class', 'float-right d-flex flex-wrap flex-column w-75' );
 
     const photo = document.createElement('img');
     photo.src = contact.photo;
     photo.alt = contact.name;
+    photo.style = "width: 100px; height: 100px;"
+    photo.setAttribute('class', 'mr-3 mb-3 img-thumbnail img-fluid rounded float-left');
 
     const name = document.createElement('h3');
     name.textContent = contact.name;
+    name.setAttribute('class', 'w-75 d-flex flex-wrap');
+
 
     const phone = document.createElement('p');
     phone.textContent = `Telefone: ${contact.phone}`;
@@ -123,10 +157,195 @@ function createContactCard(contact) {
     const email = document.createElement('p');
     email.textContent = `Email: ${contact.email}`;
 
-    contactCard.appendChild(photo);
-    contactCard.appendChild(name);
-    contactCard.appendChild(phone);
-    contactCard.appendChild(email);
+    /*const bio = document.createElement('p');
+    bio.textContent = `Descrição: ${contact.bio}`;
 
+    const pag_pessoal = document.createElement('p');
+    pag_pessoal.textContent = `Página pessoal: ${contact.page_pessoal}`;
+
+    const conhecido = document.createElement('p');
+    conhecido.textContent = `Connhecido Pelo(a): ${contact.conhecido_por}`;*/
+    
+
+
+    const fav = document.createElement('button'); 
+
+    if(contact.favorito == 1){
+        fav.textContent = `Favorito`;
+        fav.setAttribute('class', 'mt-1 btn btn-warning');
+    }
+    else{
+        fav.textContent = `Favoritar?`;
+        fav.setAttribute('class', 'mt-1 btn btn-secondary');
+    }
+
+    const excluir = document.createElement('button'); 
+    excluir.textContent = `EXCLUIR`;
+    excluir.setAttribute('class', 'mt-1 btn btn-danger');
+
+    const editar = document.createElement('button'); 
+    editar.textContent = `EDITAR`;
+    editar.setAttribute('class', 'mt-1 btn btn-primary');
+
+    contactCard.appendChild(photo);
+    
+    contactCard.appendChild(posicao_texto);
+    
+    posicao_texto.appendChild(name);
+    posicao_texto.appendChild(phone);
+    posicao_texto.appendChild(email);
+
+    contactCard.appendChild(posicao_buttons);
+
+    posicao_buttons.appendChild(fav);
+    posicao_buttons.appendChild(editar);
+    posicao_buttons.appendChild(excluir);
+
+    fav.addEventListener('click', function () {
+      favoritar(contact.id, contact.favorito);
+    });
+    
+    excluir.addEventListener('click', function () {
+    remover(contact.id);
+});
+    editar.addEventListener('click', function () {
+        botoes.appendChild(botaocancelar);
+        botoes.appendChild(botaoeditar);
+        editarC(contact.id);
+    });
     return contactCard;
+}
+function favoritar(contactId, favorito){   
+   // console.log(favorito);
+    
+    if (!confirm(`Tem certeza que deseja ${favorito == "1" ? 'desfavoritar' : 'favoritar'} este contato?`)) {
+        return; // Cancela a ação se o usuário cancelar
+    }
+    favorito = favorito === "1" ? "0" : "1"; // Inverte o estado do atributo favorito
+    //console.log(favorito);
+    fetch(`https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
+        method: 'PATCH', 
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ favorito: favorito }), // Envia apenas o atributo favorito atualizado
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Resposta de rede não foi ok');
+        }
+        // Se a remoção for bem-sucedida, recarregue a lista de contatos
+        return fetchContacts();
+    })
+    .then(contacts => {
+        renderContacts(contacts);
+    })
+    .catch(error => {
+        console.error('Houve um problema ao favoritar o contato:', error);
+    });
+    if(favorito == "1"){
+    alert('Contato favoritado com sucesso!');
+    }
+    else{
+        alert('Contato desfavoritado com sucesso!');
+    }
+}
+function remover(contactId){
+
+    if (!confirm("Tem certeza que deseja excluir este contato?")) {
+        return; // Cancela a remoção se o usuário cancelar
+    }
+
+    fetch(`https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Resposta de rede não foi ok');
+        }
+        // Se a remoção for bem-sucedida, recarregue a lista de contatos
+        return fetchContacts();
+    })
+    .then(contacts => {
+        renderContacts(contacts);
+    })
+    .catch(error => {
+        console.error('Houve um problema ao remover o contato:', error);
+    });
+
+    alert('Contato excluído com sucesso!');
+}
+function editarC(contactId) {
+    const nameForm = document.getElementById('name');
+    const phoneForm = document.getElementById('phone');
+    const emailForm = document.getElementById('email');
+    const photoForm = document.getElementById('photo'); // Supondo que você tenha um Form para foto
+    const bioForm = document.getElementById('bio'); // ... outros campos do formulário
+    const pagePessoalForm = document.getElementById('page_pessoal');
+    const conhecidoPorForm = document.getElementById('conhecido_por');
+    const favoritoForm = document.getElementById('favorito'); // Supondo que seja um campo select
+    fetch('https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/contacts.json')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Resposta de rede não foi ok');
+        }
+        return response.json();
+    })
+    .then(contacts => {
+    nameForm.value = contacts[contactId].name;
+    phoneForm.value = contacts[contactId].phone;
+    emailForm.value = contacts[contactId].email;
+    photoForm.value = contacts[contactId].photo; // Preenche o campo foto
+    bioForm.value = contacts[contactId].bio; // ... define valores para outros campos
+    pagePessoalForm.value = contacts[contactId].page_pessoal;
+    conhecidoPorForm.value = contacts[contactId].conhecido_por;
+    favoritoForm.value = contacts[contactId].favorito; // Define o valor do campo favorito (select)
+  });
+  botaocancelar.addEventListener('click', function () {
+    if (!confirm("Tem certeza que deseja cancelar a edição?")) {
+        return; 
+    }
+    addContactForm.reset(); 
+    botoes.removeChild(botoes.lastElementChild);
+    botoes.removeChild(botoes.lastElementChild);
+    alert('Edição cancelada com sucesso!');
+  });
+  botaoeditar.addEventListener('click', function () {
+    if (!confirm("Tem certeza que deseja encerrar a edição?")) {
+        return; 
+    }
+    
+    fetch(`https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
+        method: 'PUT', 
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            name: nameForm.value,
+            phone: phoneForm.value,
+            email: emailForm.value,
+            photo: photoForm.value,
+            bio:   bioForm.value,
+            page_pessoal:  pagePessoalForm.value,
+            conhecido_por:  conhecidoPorForm.value,
+            favorito:  favoritoForm.value,
+        }), 
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Resposta de rede não foi ok');
+        }
+        return fetchContacts();
+    })
+    .then(contacts => {
+        renderContacts(contacts);
+    })
+    .catch(error => {
+        console.error('Houve um problema ao remover o contato:', error);
+    });
+
+    botoes.removeChild(botoes.lastElementChild);
+    botoes.removeChild(botoes.lastElementChild);
+    alert('Edição realizada com sucesso!');
+  });
 }

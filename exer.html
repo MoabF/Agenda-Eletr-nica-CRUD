@@ -4,25 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agenda de Contatos</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <body>
-  <header>
-    <h1>Agenda de Contatos</h1>
+  <header class="p-3 mb-3 bg-info text-white">
+    <h1 class="display-2 text-center">Agenda de Contatos</h1>
   </header>
-  <div class="container">
-    <div id="contact-list" class="contact-list"></div>
-    <form id="add-contact-form" class="add-contact-form">
-      <h2>Adicionar Novo Contato</h2>
-      <input type="text" id="name" name="name" placeholder="Nome" required>
-      <input type="tel" id="phone" name="phone" placeholder="Número de Telefone" required>
-      <input type="email" id="email" name="email" placeholder="E-mail" required>
-      <input type="url" id="photo" name="photo" placeholder="URL da Foto">
-      <button type="submit">Adicionar Contato</button>
+  
+  <div class="container w-75">
+    
+    <form id="add-contact-form" class="add-contact-form form-group">
+      <h2 class="m-3 p-2 rounded bg-info text-white text-center">Adicionar Novo Contato</h2>
+      <div class="form-group">
+        <input type="text" class="form-control" id="name" name="name" placeholder="Nome" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+        <input type="text"class="form-control" pattern="[0-9]{5}-[0-9]{4}" id="phone" name="phone" placeholder="Número de Telefone: EX.: 99999-9999" required></div>
+        <div class="form-group col-md-6">
+        <input type="email" class="form-control" id="email" name="email" placeholder="E-mail" required></div>
+      </div>
+      <div class="form-group">
+      <input type="url" class="form-control" id="photo" name="photo" placeholder="URL da Foto">
+      </div>
+      <div class="form-group">
+        <textarea class="form-control" id="bio" name="bio" placeholder="Descrição do contato" rows="2" required></textarea>
+      </div>
+      <div class="form-group">
+        <input type="url" class="form-control" id="page_pessoal" name="page_pessoal" placeholder="Página pessoal">
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <!--<label for="conhecido_por">Conhecido pelo(a):</label>-->
+          <select class="form-control" name="conhecido_por" id="conhecido_por">
+            <option selected>Conhecido pelo(a):</option>
+            <option value="trabalho">TRABALHO</option>
+            <option value="escola">ESCOLA</option>
+            <option value="familia">FAMÍLIA</option>
+            <option value="amigos">AMIGOS</option>
+          </select>
+        </div>
+        <div class="form-group col-md-6">
+         <!-- <label for="favorito">Favoritar?</label>-->
+          <select class="form-control" name="favorito" id="favorito">
+            <option selected>Favoritar?</option>
+            <option value=1>SIM</option>
+            <option value=0>NÃO</option>
+          </select>
+        </div>
+      </div>
+      <div id="botoes">
+      <button type="submit" class="btn btn-info">Adicionar Contato</button></div>
     </form>
+
+    <div id="contact-list" class="contact-list">
+
   </div>
-  <footer>
-    <p>&copy; 2024 Agenda de Contatos</p>
+  </div>
+  
+  <footer class="p-1 pt-3 mt-3 bg-info text-white">
+    <p class="text-center">&copy; 2024 Agenda de Contatos</p>
   </footer>
 
   <script src="js/script.js"></script>
