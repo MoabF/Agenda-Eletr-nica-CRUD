@@ -1,5 +1,4 @@
 # mini-projeto-4
-<br />
 - Um programa feito utilizando o bootstrap, para o estilo, e uma API (firebase), para guardar as informações do programa;
 - Esse programa é uma agenda eletrônica, ele tem as funções de "adicionar", "editar", "remover" e "favoritar um contato":
   - Adicionar: adiciona o contato, com suas iformações, na agenda (API);
