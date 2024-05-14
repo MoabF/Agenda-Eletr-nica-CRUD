@@ -18,12 +18,52 @@ const botoes = document.getElementById('botoes');
 
 const botaoeditar = document.createElement('button');
 botaoeditar.setAttribute('class', 'ml-1 btn btn-success');
+botaoeditar.setAttribute('id', 'edit');
 
 const botaocancelar = document.createElement('button');
 botaocancelar.setAttribute('class', 'ml-1 btn btn-danger');
+botaocancelar.setAttribute('id', 'cancel');
 
 botaoeditar.textContent = `FINALIZAR EDIÇÃO`;
-botaocancelar.textContent = `CANCELAR EDIÇÃO`
+botaocancelar.textContent = `CANCELAR EDIÇÃO`    
+
+
+/*const filt = document.getElementById('filt');
+
+const formCategor = document.createElement('form');
+const selecao =  document.createElement('selection');
+selecao.setAttribute('class', 'form-control');
+selecao.setAttribute('id', 'filtro-categoria');
+const selecao_nome = document.createElement('option');
+selecao_nome.textContent = `Filtrar por:`;
+selecao.appendChild(selecao_nome);
+formCategor.appendChild(selecao);
+filt.appendChild(formCategor);
+*/
+
+
+/*
+function adicionarCategorias(){
+    return fetch('https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/categorias.json')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Resposta de rede não foi ok');
+        }
+        return response.json();
+    })
+    .then(categorias => {
+        for(let i = 0; i < categoriasValues.length; i++){
+            //const categoria = categorias[i];
+            const categor = categoriasValues[i];
+            const categoriasValues = Object.values(categorias);
+            const selecao_option = document.createElement('option');
+            selecao_option.textContent = categor.categoria;
+            selecao_option.value = categor.categoria;
+            selecao.appendChild(selecao_option);
+        }
+    });
+}*/
+
 
 document.addEventListener('DOMContentLoaded', listContacts);
 
@@ -216,25 +256,22 @@ function createContactCard(contact) {
     return contactCard;
 }
 function favoritar(contactId, favorito){   
-   // console.log(favorito);
     
     if (!confirm(`Tem certeza que deseja ${favorito == "1" ? 'desfavoritar' : 'favoritar'} este contato?`)) {
-        return; // Cancela a ação se o usuário cancelar
+        return; 
     }
-    favorito = favorito === "1" ? "0" : "1"; // Inverte o estado do atributo favorito
-    //console.log(favorito);
+    favorito = favorito === "1" ? "0" : "1"; 
     fetch(`https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
         method: 'PATCH', 
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ favorito: favorito }), // Envia apenas o atributo favorito atualizado
+        body: JSON.stringify({ favorito: favorito }), 
     })
     .then(response => {
         if (!response.ok) {
             throw new Error('Resposta de rede não foi ok');
         }
-        // Se a remoção for bem-sucedida, recarregue a lista de contatos
         return fetchContacts();
     })
     .then(contacts => {
@@ -253,7 +290,7 @@ function favoritar(contactId, favorito){
 function remover(contactId){
 
     if (!confirm("Tem certeza que deseja excluir este contato?")) {
-        return; // Cancela a remoção se o usuário cancelar
+        return;
     }
 
     fetch(`https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
@@ -263,7 +300,6 @@ function remover(contactId){
         if (!response.ok) {
             throw new Error('Resposta de rede não foi ok');
         }
-        // Se a remoção for bem-sucedida, recarregue a lista de contatos
         return fetchContacts();
     })
     .then(contacts => {
@@ -276,14 +312,16 @@ function remover(contactId){
     alert('Contato excluído com sucesso!');
 }
 function editarC(contactId) {
+    const edit = document.getElementById('edit');
+    const cancel = document.getElementById('cancel');
     const nameForm = document.getElementById('name');
     const phoneForm = document.getElementById('phone');
     const emailForm = document.getElementById('email');
-    const photoForm = document.getElementById('photo'); // Supondo que você tenha um Form para foto
-    const bioForm = document.getElementById('bio'); // ... outros campos do formulário
+    const photoForm = document.getElementById('photo'); 
+    const bioForm = document.getElementById('bio'); 
     const pagePessoalForm = document.getElementById('page_pessoal');
     const conhecidoPorForm = document.getElementById('conhecido_por');
-    const favoritoForm = document.getElementById('favorito'); // Supondo que seja um campo select
+    const favoritoForm = document.getElementById('favorito'); 
     fetch('https://mini-projeto-4-web1-moabf-default-rtdb.firebaseio.com/contacts.json')
     .then(response => {
         if (!response.ok) {
@@ -295,22 +333,22 @@ function editarC(contactId) {
     nameForm.value = contacts[contactId].name;
     phoneForm.value = contacts[contactId].phone;
     emailForm.value = contacts[contactId].email;
-    photoForm.value = contacts[contactId].photo; // Preenche o campo foto
-    bioForm.value = contacts[contactId].bio; // ... define valores para outros campos
+    photoForm.value = contacts[contactId].photo; 
+    bioForm.value = contacts[contactId].bio; 
     pagePessoalForm.value = contacts[contactId].page_pessoal;
     conhecidoPorForm.value = contacts[contactId].conhecido_por;
-    favoritoForm.value = contacts[contactId].favorito; // Define o valor do campo favorito (select)
+    favoritoForm.value = contacts[contactId].favorito; 
   });
-  botaocancelar.addEventListener('click', function () {
+  cancel.addEventListener('click', function () {
     if (!confirm("Tem certeza que deseja cancelar a edição?")) {
         return; 
     }
     addContactForm.reset(); 
-    botoes.removeChild(botoes.lastElementChild);
-    botoes.removeChild(botoes.lastElementChild);
+    botoes.removeChild(cancel);
+    botoes.removeChild(edit);
     alert('Edição cancelada com sucesso!');
   });
-  botaoeditar.addEventListener('click', function () {
+  edit.addEventListener('click', function () {
     if (!confirm("Tem certeza que deseja encerrar a edição?")) {
         return; 
     }
@@ -341,11 +379,12 @@ function editarC(contactId) {
         renderContacts(contacts);
     })
     .catch(error => {
-        console.error('Houve um problema ao remover o contato:', error);
+        console.error('Houve um problema ao editar o contato:', error);
     });
 
-    botoes.removeChild(botoes.lastElementChild);
-    botoes.removeChild(botoes.lastElementChild);
+    botoes.removeChild(cancel);
+    botoes.removeChild(edit);
+    addContactForm.reset(); 
     alert('Edição realizada com sucesso!');
   });
 }
