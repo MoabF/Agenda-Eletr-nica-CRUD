@@ -11,4 +11,4 @@
   - categorias: É o link para uma segunda página, ela inicialmente tinha o intuito de adicionar categorias para serem usadas no formulário de adição de contatos e na filtragem, para visualização dos contatos, pelas categorias, mas não consegui implementar a filtragem, nem utilizar essas categorias salvas no formulário.
     - A segunda página permite a adição, a remoção e a edição de uma nova categoria. (mas ela tem o mesmo bug de edição que a página home tem).
 <br />
- *Não consegui fazer a função de filtragem, nem utilizar as categorias salvas no firebase no formulário da agenda, e há a presença de um bug nas funções de edição*
+ **Não consegui fazer a função de filtragem, nem utilizar as categorias salvas no firebase no formulário da agenda, e há a presença de um bug nas funções de edição**
