@@ -1,4 +1,4 @@
-# mini-projeto-4
+# Agenda Eletrônica
 - Um programa feito utilizando o bootstrap, para o estilo, e uma API (firebase), para guardar as informações do programa;
 - Esse programa é uma agenda eletrônica, ele tem as funções de "adicionar", "editar", "remover" e "favoritar um contato":
   - Adicionar: adiciona o contato, com suas iformações, na agenda (API);
@@ -11,4 +11,4 @@
   - categorias: É o link para uma segunda página, ela inicialmente tinha o intuito de adicionar categorias para serem usadas no formulário de adição de contatos e na filtragem, para visualização dos contatos, pelas categorias, mas não consegui implementar a filtragem, nem utilizar essas categorias salvas no formulário.
     - A segunda página permite a adição, a remoção e a edição de uma nova categoria. (mas ela tem o mesmo bug de edição que a página home tem).
 <br />
- **Não consegui fazer a função de filtragem, nem utilizar as categorias salvas no firebase no formulário da agenda, e há a presença de um bug nas funções de edição**
+
